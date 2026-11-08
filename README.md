@@ -23,7 +23,7 @@ stop). Every module here exists because one of those hurt first.
 | `context_pressure.py` | Silent context exhaustion — leading-indicator pressure gauge with graduated actions (prune tool results → summarize → checkpoint) |
 | `failure_journal.py` | Un-debuggable agents — JSONL causal-chain logging + `top_failures()` rollup + anti-spin counter |
 
-All stdlib-only. Python 3.10+. Tested: `python3 tools/test_all.py` → 21 checks.
+All stdlib-only. Python 3.10+. Tested: `python3 tools/test_all.py` → 18 checks.
 
 ## 10-minute install
 

@@ -9,11 +9,15 @@ from context_pressure import ContextPressure
 from failure_journal import FailureJournal
 
 PASS = 0
+FAILURES = []
 def check(name, cond):
     global PASS
-    assert cond, f"FAIL: {name}"
-    PASS += 1
-    print(f"  ok  {name}")
+    if cond:
+        PASS += 1
+        print(f"  ok  {name}")
+    else:
+        FAILURES.append(name)
+        print(f" FAIL {name}")
 
 # --- resilient_call ---------------------------------------------------------
 calls = {"n": 0}
@@ -87,4 +91,7 @@ check("journal logs failures", jf.record_call_result("run1", "slow2", r, budget=
 check("anti-spin counter", jf.same_failure_count_today("TimeoutError", "slow2") == 1)
 os.remove("/tmp/agentops_test_journal.jsonl")
 
-print(f"\n{PASS}/21 checks passed")
+print(f"\n{PASS}/18 checks passed")
+if FAILURES:
+    print("FAILED:", ", ".join(FAILURES))
+    sys.exit(1)
