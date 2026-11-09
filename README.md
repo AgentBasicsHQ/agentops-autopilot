@@ -25,6 +25,19 @@ stop). Every module here exists because one of those hurt first.
 
 All stdlib-only. Python 3.10+. Tested: `python3 tools/test_all.py` → 18 checks.
 
+## The sixth killer (named by the community)
+
+Mode #6, credited to @ChanYop who named it better than we could in our launch
+thread: **partial success with a confident summary**. The call *returned*, the
+run completed, and the model wrote a confident paragraph — but only 4 of 11
+steps actually executed. Nothing errored, so no retry logic ever sees it.
+
+It's invisible unless you diff planned steps against executed steps. The
+defense: treat a final summary as untrusted until it cites its own evidence —
+every step leaves a receipt in the failure journal, and the answer must match
+the receipt count. `failure_journal.py` + a planned-steps checklist turns
+"found the issues" into "4/11 receipts — partial", said out loud.
+
 ## 10-minute install
 
 ```python
@@ -52,8 +65,9 @@ if not r.ok:
 - **Pro ($49):** 4 production templates (agent loop, cron pipeline, API
   gateway wrapper, eval harness) + the AgentOps Runbook (failure-mode
   playbook) + quarterly module updates.
-- **Team ($99):** everything in Pro + 1:1 45-min integration session +
-  priority patches for 12 months.
+- **Done-With-You ($199):** a 1-hour live pairing session — we wire these
+  modules into your pipeline together, verified against your own traffic.
+  Full refund if it doesn't stick.
 
 Templates and runbook are in the Pro/Team download. This repo is the proof
 they're built from something real.
