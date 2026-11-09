@@ -1,6 +1,6 @@
 # AgentOps Autopilot
 
-**The reliability layer every AI agent needs — 5 production-hardened Python
+**The reliability layer every AI agent needs — 6 production-hardened Python
 tools, zero dependencies, drop-in in 10 minutes.**
 
 Every agent that calls external APIs eventually meets the same five killers:
@@ -22,8 +22,9 @@ stop). Every module here exists because one of those hurt first.
 | `turn_budget.py` | The "worked 40 steps, died at step 41" failure — deadline discipline; ship partial work with a status note instead of losing everything |
 | `context_pressure.py` | Silent context exhaustion — leading-indicator pressure gauge with graduated actions (prune tool results → summarize → checkpoint) |
 | `failure_journal.py` | Un-debuggable agents — JSONL causal-chain logging + `top_failures()` rollup + anti-spin counter |
+| `receipt_audit.py` | Partial success with a confident summary — diff planned steps vs receipts before the agent is allowed to sound done |
 
-All stdlib-only. Python 3.10+. Tested: `python3 tools/test_all.py` → 18 checks.
+All stdlib-only. Python 3.10+. Tested: `python3 tools/test_all.py` → 24 checks.
 
 ## The sixth killer (named by the community)
 
@@ -32,11 +33,13 @@ thread: **partial success with a confident summary**. The call *returned*, the
 run completed, and the model wrote a confident paragraph — but only 4 of 11
 steps actually executed. Nothing errored, so no retry logic ever sees it.
 
-It's invisible unless you diff planned steps against executed steps. The
-defense: treat a final summary as untrusted until it cites its own evidence —
-every step leaves a receipt in the failure journal, and the answer must match
-the receipt count. `failure_journal.py` + a planned-steps checklist turns
-"found the issues" into "4/11 receipts — partial", said out loud.
+It's invisible unless you diff planned steps against executed steps. As of
+today that defense ships as code, not advice: **`receipt_audit.py`** (MIT,
+stdlib-only). Each step leaves a receipt, the final summary is untrusted until
+it matches the receipt count, and `enforce_partial_honesty()` stamps the
+numbers out loud — "found the issues" becomes "PARTIAL (4/11 receipts — not
+done: post_report)". The verdict feeds straight into `failure_journal.record()`
+as a `partial_success` record.
 
 ## 10-minute install
 
@@ -61,7 +64,7 @@ if not r.ok:
 
 ## License tiers
 
-- **MIT core (this repo):** all 5 modules, free for personal projects.
+- **MIT core (this repo):** all 6 modules, free for personal projects.
 - **Pro ($49):** 4 production templates (agent loop, cron pipeline, API
   gateway wrapper, eval harness) + the AgentOps Runbook (failure-mode
   playbook) + quarterly module updates.

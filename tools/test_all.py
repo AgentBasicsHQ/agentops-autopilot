@@ -7,6 +7,7 @@ from json_repair import repair_json
 from turn_budget import TurnBudget
 from context_pressure import ContextPressure
 from failure_journal import FailureJournal
+from receipt_audit import StepAudit, enforce_partial_honesty
 
 PASS = 0
 FAILURES = []
@@ -91,7 +92,32 @@ check("journal logs failures", jf.record_call_result("run1", "slow2", r, budget=
 check("anti-spin counter", jf.same_failure_count_today("TimeoutError", "slow2") == 1)
 os.remove("/tmp/agentops_test_journal.jsonl")
 
-print(f"\n{PASS}/18 checks passed")
+# --- receipt_audit (mode #6: partial success with a confident summary) ------
+a = StepAudit(run_id="run41")
+a.plan(["fetch", "summarize", "post"])
+a.receipt("fetch", detail="4/11 rows")
+a.receipt("summarize")
+a.final_claim("All done! Found the issues. No errors.")
+v = a.audit()
+check("audit catches missing receipt", not v.ok and v.missing == ["post"])
+check("confident summary flagged unsupported", v.claims_unsupported)
+a2 = StepAudit(run_id="ok")
+a2.plan(["x", "y"]); a2.receipt("x"); a2.receipt("y")
+a2.final_claim("Both steps complete.")
+check("clean run passes audit", a2.audit().ok)
+a3 = StepAudit(run_id="honest")
+a3.plan(["x", "y"]); a3.receipt("x")
+a3.final_claim("Partial: only 1 of 2 steps finished.")
+v3 = a3.audit()
+check("honest partial not flagged", v3.missing == ["y"] and not v3.claims_unsupported)
+fixed = enforce_partial_honesty("All done! Found the issues.", v)
+check("enforcement stamps receipt count", fixed.startswith("PARTIAL (2/3 receipts")
+      and "not done: post" in fixed)
+check("verdict feeds failure_journal shape", v.as_failure()["kind"] == "partial_success"
+      and v.as_failure()["receipts"] == "2/3")
+
+total = PASS + len(FAILURES)
+print(f"\n{PASS}/{total} checks passed")
 if FAILURES:
     print("FAILED:", ", ".join(FAILURES))
     sys.exit(1)
