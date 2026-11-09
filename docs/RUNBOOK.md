@@ -28,3 +28,9 @@ table of contents so you know what you're buying.)
     files + resume (templates).
 12. **Un-debuggable production incident** — no record of why the turn died.
     Fix: FailureJournal causal chain + top_failures rollup.
+13. **Partial success with a confident summary** — the run "completed", 4 of 11
+    steps ran, the model wrote a fluent wrap-up anyway. Nothing errored, so no
+    retry logic sees it. Detect: receipt_audit.StepAudit receipt diff.
+    Fix: enforce_partial_honesty() stamps the receipt count onto the summary
+    before the user ever reads it. (Named by the community, 2026-11-09; ships
+    as `receipt_audit.py` in the MIT core.)
