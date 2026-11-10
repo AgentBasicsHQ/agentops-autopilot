@@ -65,12 +65,24 @@ if not r.ok:
 ## License tiers
 
 - **MIT core (this repo):** all 6 modules, free for personal projects.
-- **Pro ($49):** 4 production templates (agent loop, cron pipeline, API
+- **Starter ($19):** 4 production templates (agent loop, cron pipeline, API
   gateway wrapper, eval harness) + the AgentOps Runbook (failure-mode
-  playbook) + quarterly module updates.
-- **Done-With-You ($199):** a 1-hour live pairing session — we wire these
-  modules into your pipeline together, verified against your own traffic.
-  Full refund if it doesn't stick.
+  playbook), instant download.
+- **Pro ($49):** everything in Starter + the full test suite + failure
+  gauntlet + quarterly module updates.
+- **Agent Integration ($199):** async done-for-you — we wire these modules
+  into your pipeline this week, delivered as a working repo + short setup
+  guide, no meeting needed. Full refund if it doesn't stick.
 
-Templates and runbook are in the Pro/Team download. This repo is the proof
-they're built from something real.
+Templates and runbook are in the paid download (agentbasicshq.com). This
+repo is the proof they're built from something real.
+
+## Deep dives
+
+Each module has a long-form write-up of the failure mode that forced it to
+exist — working code, no frameworks:
+
+- [Python retry with exponential backoff and jitter (stdlib only)](https://agentbasicshq.com/blog/python-retry-exponential-backoff-jitter/)
+- [LLM JSON output truncated? A deterministic repair ladder](https://agentbasicshq.com/blog/llm-json-output-truncated-fix/)
+- [AI agent timeout handling: stop losing runs at step 41](https://agentbasicshq.com/blog/ai-agent-timeout-handling-python/)
+- [Context window management: the pressure gauge at 70%](https://agentbasicshq.com/blog/context-window-management-for-agents/)
